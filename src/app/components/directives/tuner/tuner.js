@@ -35,6 +35,15 @@ angular.module('yamahaUi')
                     }
                 };
 
+                $scope.$watch('options.type', function (newValue, oldValue) {
+                    if(newValue === 'FM' && oldValue === 'AM') {
+                        $scope.options.value /= 10;
+                    }
+                    else if(newValue === 'AM' && oldValue === 'FM') {
+                        $scope.options.value *= 10;
+                    }
+                })
+
             },
             controllerAs: 'tuner',
             templateUrl: '/app/components/directives/tuner/tuner.tmpl.html'
