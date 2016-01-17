@@ -1,0 +1,15 @@
+.acme-navbar-text {
+  color: white;
+}
+
+
+.navbar_fixed {
+  position: fixed;
+  top: 0;
+  width:100%;
+  z-index: 21;
+}
+
+.container-main {
+  padding-top: 80px;
+}

@@ -1,0 +1,32 @@
+<li>
+        <span class="bucket-content md-button md-raised">
+            <div class="row">Tuner</div>
+            <div class="row">
+                <!--Volume-->
+                <div class="col-xs-12">
+                    <md-radio-group ng-model="options.type">
+                        <md-radio-button value="AM">AM</md-radio-button>
+                        <md-radio-button value="FM">FM</md-radio-button>
+                    </md-radio-group>
+                    <tuner-control options="options"></tuner-control>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <md-radio-group ng-model="options.soundType">
+                        <md-radio-button value="stereo">Stereo</md-radio-button>
+                        <md-radio-button value="mono">Mono</md-radio-button>
+                    </md-radio-group>
+                </div>
+            </div>
+            <div class="row">
+                <!--Volume-->
+                <div class="col-xs-12 flex-multiline">
+                    <md-input-container flex class="flex-xs-100 flex-sm-100" ng-repeat="row in options.infoRows">
+                        <label>{{row.name}}</label>
+                        <input ng-model="options.info[row.valueName]" disabled="disabled">
+                    </md-input-container>
+                </div>
+            </div>
+        </span>
+</li>

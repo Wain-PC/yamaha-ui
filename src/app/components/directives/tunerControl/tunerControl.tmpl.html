@@ -1,0 +1,41 @@
+<md-menu>
+    <md-button class="md-raised nouppercase" ng-click="tunerControl.openMenu($mdOpenMenu, $event)">
+        <ng-md-icon icon="radio" md-menu-origin></ng-md-icon>
+        {{options.value | tunerAMFM:freqs[options.type].title}}
+    </md-button>
+    <md-menu-content width="6">
+                            <span class="inline-md-menu-content">
+                            <md-menu-item flex="15">
+                                <md-button md-prevent-menu-close="md-prevent-menu-close" class="md-button-mini">
+                                    <ng-md-icon icon="fast_rewind" md-menu-align-target></ng-md-icon>
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item flex="15">
+                                <md-button md-prevent-menu-close="md-prevent-menu-close" class="md-button-mini"  ng-hold="tunerControl.changeFrequency(-1)">
+                                    <ng-md-icon icon="chevron_left"></ng-md-icon>
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item flex>
+                                <md-button>{{options.value | tunerAMFM:freqs[options.type].title}}</md-button>
+                            </md-menu-item>
+                            <md-menu-item flex="15">
+                                <md-button md-prevent-menu-close="md-prevent-menu-close" class="md-button-mini" ng-hold="tunerControl.changeFrequency(1)">
+                                    <ng-md-icon icon="chevron_right"></ng-md-icon>
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item flex="15">
+                                <md-button md-prevent-menu-close="md-prevent-menu-close" class="md-button-mini">
+                                    <ng-md-icon icon="fast_forward"></ng-md-icon>
+                                </md-button>
+                            </md-menu-item>
+                                </span>
+        <md-menu-divider></md-menu-divider>
+        <md-menu-item>
+            <div class="col-xs-12">
+                <md-slider flex class="md-primary" min="{{freqs[options.type].min}}" max="{{freqs[options.type].max}}"
+                           step="{{freqs[options.type].step}}"
+                           ng-model="options.value"></md-slider>
+            </div>
+        </md-menu-item>
+    </md-menu-content>
+</md-menu>

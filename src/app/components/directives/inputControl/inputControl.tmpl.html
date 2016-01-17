@@ -1,0 +1,19 @@
+<md-menu>
+    <md-button class="md-raised nouppercase" ng-click="inputControl.openMenu($mdOpenMenu, $event)">
+        <ng-md-icon md-menu-origin icon="{{(inputslist|filter:{name:input})[0].icon}}"></ng-md-icon>
+        {{input}}
+    </md-button>
+    <md-menu-content width="4">
+        <md-menu-item
+         ng-repeat="inputItem in inputslist">
+        <md-button ng-if="$first" ng-click="inputControl.changeInput(inputItem.name)">
+            <ng-md-icon md-menu-align-target icon="{{inputItem.icon}}"></ng-md-icon>
+            {{inputItem.name}}
+        </md-button>
+        <md-button ng-if="!$first" ng-click="inputControl.changeInput(inputItem.name)">
+            <ng-md-icon icon="{{inputItem.icon}}"></ng-md-icon>
+            {{inputItem.name}}
+        </md-button>
+        </md-menu-item>
+    </md-menu-content>
+</md-menu>

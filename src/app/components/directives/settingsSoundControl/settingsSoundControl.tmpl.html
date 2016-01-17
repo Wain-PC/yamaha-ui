@@ -1,0 +1,35 @@
+<md-menu>
+    <md-button class="md-raised nouppercase" ng-click="soundControlButton.openMenu($mdOpenMenu, $event)">
+        <ng-md-icon icon="adjust"></ng-md-icon>
+        {{::soundControlButton.options.text}}: {{soundControlButton.value | signedDb}}
+    </md-button>
+    <md-menu-content width="4">
+                            <span class="inline-md-menu-content">
+                            <md-menu-item>
+                                <md-button md-prevent-menu-close="md-prevent-menu-close" class="md-button-mini"
+                                           ng-click="soundControlButton.changeValue(soundControlButton.options.step,-1)">
+                                    <ng-md-icon icon="volume_down"></ng-md-icon>
+                                    {{::-1*soundControlButton.options.step | signedDb}}
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item flex="33">
+                                <button disabled class="md-button">{{soundControlButton.value | signedDb}}</button>
+                            </md-menu-item>
+                            <md-menu-item flex>
+                                <md-button md-prevent-menu-close="md-prevent-menu-close" class="md-button-mini"
+                                           ng-click="soundControlButton.changeValue(soundControlButton.options.step,1)">
+                                    <ng-md-icon icon="volume_up"></ng-md-icon>
+                                    {{::soundControlButton.options.step | signedDb}}
+                                </md-button>
+                            </md-menu-item>
+                                </span>
+        <md-menu-divider></md-menu-divider>
+        <md-menu-item>
+            <div class="col-xs-12">
+                <md-slider md-discrete flex class="md-primary" min="{{::soundControlButton.options.min}}"
+                           max="{{::soundControlButton.options.max}}" step="{{::soundControlButton.options.step}}"
+                           ng-model="soundControlButton.value"></md-slider>
+            </div>
+        </md-menu-item>
+    </md-menu-content>
+</md-menu>

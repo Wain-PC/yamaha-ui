@@ -1,0 +1,137 @@
+<h2 class="md-headline" style="margin-top: 0;">Settings</h2>
+<ul class="buckets layout-wrap layout-align-center-center layout-row" layout="" layout-align="center center"
+    layout-wrap="">
+    <li class="flex-gt-sm-50 flex-100">
+        <span class="bucket-content md-button md-raised">
+            <div class="row">Sound</div>
+            <div flex class="flex-multiline">
+                <settings-sound-control options="settings.buttons.bass"
+                                        value="settings.opts.bass"></settings-sound-control>
+                <!--Treble-->
+                <settings-sound-control options="settings.buttons.treble"
+                                        value="settings.opts.treble"></settings-sound-control>
+                <!--Subwoofer-->
+                <settings-sound-control options="settings.buttons.subwoofer"
+                                        value="settings.opts.subwoofer"></settings-sound-control>
+                <!--Dialogue level-->
+                <settings-sound-control options="settings.buttons.dialogue"
+                                        value="settings.opts.dialogue"></settings-sound-control>
+                <!--Dialogue lift-->
+                <settings-sound-control options="settings.buttons.dialogueLift"
+                                        value="settings.opts.dialogueLift"></settings-sound-control>
+            </div>
+        </span>
+    </li>
+
+    <!--Network settings-->
+    <li class="flex-gt-sm-50 flex-100">
+        <span class="bucket-content md-button md-raised">
+                        <div class="row">Network</div>
+            <div flex class="flex-multiline">
+                <md-checkbox ng-model="settings.autoReload" aria-label="Auto Reload">
+                    Auto Reload
+                </md-checkbox>
+                <md-checkbox ng-model="settings.networkStandby" aria-label="Network Standby">
+                    Network Standby
+                </md-checkbox>
+            </div>
+        </span>
+    </li>
+
+    <!--Zone names-->
+    <li class="flex-100">
+        <span class="bucket-content md-button md-raised">
+            <div class="row">Naming</div>
+            <div flex class="flex-multiline nouppercase">
+                <md-input-container class="flex-100">
+                    <label>Network Name</label>
+                    <input ng-model="settings.networkName">
+                </md-input-container>
+                <md-input-container class="flex-100">
+                    <label>Main Zone Name</label>
+                    <input ng-model="settings.zone1.name">
+                </md-input-container>
+                <md-input-container class="flex-100">
+                    <label>Zone 2 Name</label>
+                    <input ng-model="settings.zone2.name">
+                </md-input-container>
+            </div>
+        </span>
+    </li>
+    <!--IP Addresses-->
+    <li class="flex-100">
+        <span class="bucket-content md-button md-raised">
+                        <div class="row">IP Address</div>
+                        <div class="row">
+                            <md-checkbox ng-model="settings.dhcp" aria-label="DHCP"
+                                         ng-class="{'md-primary': settings.dhcp, 'md-warn':!settings.dhcp}">
+                                DHCP
+                            </md-checkbox>
+                        </div>
+            <div flex class="flex-multiline nouppercase">
+                <md-input-container class="flex-100">
+                    <label>IP Address</label>
+                    <input ng-model="settings.ipAddress" ng-disabled="settings.dhcp">
+                </md-input-container>
+                <md-input-container class="flex-100 flex-gt-sm-50">
+                    <label>Subnet Mask</label>
+                    <input ng-model="settings.subnetMask" ng-disabled="settings.dhcp">
+                </md-input-container>
+                <md-input-container class="flex-100 flex-gt-sm-50">
+                    <label>Default Gateway</label>
+                    <input ng-model="settings.defaultGateway" ng-disabled="settings.dhcp">
+                </md-input-container>
+                <md-input-container class="flex-100 flex-gt-sm-50">
+                    <label>Primary DNS</label>
+                    <input ng-model="settings.dns1" ng-disabled="settings.dhcp">
+                </md-input-container>
+                <md-input-container class="flex-100 flex-gt-sm-50">
+                    <label>Secondary DNS</label>
+                    <input ng-model="settings.dns2" ng-disabled="settings.dhcp">
+                </md-input-container>
+            </div>
+        </span>
+    </li>
+    <!--IP Addresses-->
+    <li class="flex-100">
+        <span class="bucket-content md-button md-raised">
+                        <div class="row">MAC Filter</div>
+            <div flex class="flex-multiline nouppercase">
+                <md-input-container class="flex-100 flex-gt-sm-50"
+                                    ng-repeat="item in settings.range(10) track by $index">
+                    <label>MAC Address {{$index+1}}</label>
+                    <input ng-model="settings.macAddress[$index]" mac-address>
+                </md-input-container>
+            </div>
+        </span>
+    </li>
+
+    <!--Backup and Update-->
+    <li class="flex-100">
+        <span class="bucket-content md-button md-raised">
+                        <div class="row">Backup/Recover & Update</div>
+                <div class="row">
+                    <md-button class="md-raised md-primary" aria-label="Make Backup">
+                        Make Backup
+                    </md-button>
+                    <md-divider></md-divider>
+                    <md-button class="md-warn" aria-label="Select File">
+                        Select File
+                    </md-button>
+                    <md-button class="md-raised" aria-label="Recover">
+                        Recover
+                    </md-button>
+                </div>
+            <md-divider></md-divider>
+                <div class="row">
+                    <input type="file" ng-model="settings.updateFile" ng-hide="true">
+                    <md-button class="md-warn" aria-label="Select File">
+                        Select File
+                    </md-button>
+                    <md-button class="md-warn md-raised" aria-label="Update">
+                        Update
+                    </md-button>
+                </div>
+        </span>
+    </li>
+</ul>

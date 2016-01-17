@@ -1,0 +1,37 @@
+<md-menu>
+    <md-button class="md-raised nouppercase" ng-click="volumeControl.openMenu($mdOpenMenu, $event)">
+        <span md-menu-origin>{{volume | signedDb}}</span>
+    </md-button>
+    <md-menu-content width="4">
+        <span class="inline-md-menu-content">
+            <md-menu-item flex="50">
+                <md-button>
+                    <span md-menu-align-target>{{volume | signedDb}}</span>
+                </md-button>
+            </md-menu-item>
+        <md-menu-item flex="50">
+            <md-button ng-click="volumeControl.toggleMute()"
+                       md-prevent-menu-close="md-prevent-menu-close">
+                <ng-md-icon
+                        ng-attr-icon="{{!ismuted && 'volume_mute' || 'volume_off' }}"></ng-md-icon>
+                {{!ismuted && 'Mute' || 'Unmute' }}
+            </md-button>
+        </md-menu-item>
+            </span>
+                            <span class="inline-md-menu-content">
+                            <md-menu-item flex="25" ng-repeat="item in [
+        { icon: 'volume_down', text: -10},
+        { icon: 'volume_mute', text: -5},
+        { icon: 'volume_off', text: +5},
+        { icon: 'volume_up', text: +10}
+      ]">
+                                <md-button md-prevent-menu-close="md-prevent-menu-close" class="md-button-mini" ng-click="volumeControl.changeVolumeBy(item.text)">
+                                    <!--
+                                                                        <ng-md-icon icon="{{item.icon}}"></ng-md-icon>
+                                    -->
+                                    {{item.text | signedDb}}
+                                </md-button>
+                            </md-menu-item>
+                                </span>
+    </md-menu-content>
+</md-menu>
