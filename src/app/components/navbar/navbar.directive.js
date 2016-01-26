@@ -19,7 +19,7 @@
     };
 
     /** @ngInject */
-    function NavbarController($scope, $mdMedia, $mdSidenav) {
+    function NavbarController($scope, $mdMedia, $mdSidenav, pubSub, yamahaBackend) {
       var vm = this;
       vm.options = {};
       $scope.zones= [
@@ -51,6 +51,18 @@
       vm.lastChar = function (str) {
         return str[str.length - 1];
       };
+
+      pubSub.subscribe('backend:change', $scope, function (event, data) {
+        //get zones number and slice the zones array accordingly
+        var length = data.zones.length;
+          if(length && $scope.zones.length > length) {
+              $scope.zones = $scope.zones.slice(0,length);
+          }
+          //also, apply custom names
+          $scope.zones.forEach(function (zone, index) {
+              zone.name = data.zones[index].name;
+          });
+      }, true);
     }
   }
 

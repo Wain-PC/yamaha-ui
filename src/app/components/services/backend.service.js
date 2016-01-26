@@ -2,171 +2,83 @@
     'use strict';
     angular
         .module('yamahaUi')
-        .service('yamahaBackend', function () {
-            this.zones = [
-                {
-                    href: '/zone1',
-                    icon: 'school',
-                    text: 'Main zone',
-                    on: true,
-                    volume: -32.5,
-                    input: 'HDMI1',
-                    soundProgram: '2ch Stereo',
-                    isMuted: false,
-                    sleepTimer: 30,
-                    enhancer: true,
-                    inputs: [{
-                        name: 'HDMI1',
-                        icon: 'home'
-                    }, {
-                        name: 'HDMI2',
-                        icon: 'home'
-                    }, {
-                        name: 'HDMI3',
-                        icon: 'home'
-                    }, {
-                        name: 'HDMI4',
-                        icon: 'home'
-                    }, {
-                        name: 'AV1',
-                        icon: 'star'
-                    }, {
-                        name: 'AV2',
-                        icon: 'star'
-                    }, {
-                        name: 'AV3',
-                        icon: 'star'
-                    }, {
-                        name: 'AV4',
-                        icon: 'star'
-                    }, {
-                        name: 'AV5',
-                        icon: 'star'
-                    }, {
-                        name: 'AV6',
-                        icon: 'star'
-                    }, {
-                        name: 'USB',
-                        icon: 'usb'
-                    }, {
-                        name: 'AirPlay',
-                        icon: 'airplay'
-                    }, {
-                        name: 'NET RADIO',
-                        icon: 'wifi'
-                    }, {
-                        name: 'TUNER',
-                        icon: 'radio'
-                    }],
-                    soundPrograms: [
-                        {
-                            name: '2ch Stereo',
-                            icon: 'star'
-                        }, {
-                            name: '7ch Stereo',
-                            icon: 'star'
-                        }, {
-                            name: 'Hall in Vienna',
-                            icon: 'star'
-                        }, {
-                            name: 'Hall in Munich',
-                            icon: 'star'
-                        }, {
-                            name: 'One',
-                            icon: 'star'
-                        }, {
-                            name: 'Two',
-                            icon: 'star'
-                        }, {
-                            name: 'Three',
-                            icon: 'star'
-                        }, {
-                            name: 'Straight',
-                            icon: 'star'
-                        }
+        .service('yamahaBackend', function (yamahaJS, pubSub) {
+            var _self = this;
 
-                    ],
-                    scenes: [
-                        {
-                            name: 'Scene 1',
-                            icon: 'star'
-                        },
-                        {
-                            name: 'Scene 2',
-                            icon: 'star'
-                        },
-                        {
-                            name: 'Scene 3',
-                            icon: 'star'
-                        },
-                        {
-                            name: 'Scene 4',
-                            icon: 'star'
-                        }
-                    ],
-                    tuner: {
-                        frequency: 95.2,
-                        type: 'FM'
+            pubSub.addEvent({
+                name: 'backend:change',
+                getter: function () {
+                    return {
+                        settings: _self.settings,
+                        zones: _self.zones,
+                        allInputs: _self.allInputs
                     }
-                },
-                {
-                    href: '/zone2',
-                    icon: 'play_circle_fill',
-                    text: 'Zone 2',
-                    on: true,
-                    volume: -60.0,
-                    input: 'HDMI2',
-                    isMuted: false,
-                    sleepTimer: 30,
-                    inputs: [{
-                        name: 'AV5',
-                        icon: 'star'
-                    }, {
-                        name: 'AV6',
-                        icon: 'star'
-                    }, {
-                        name: 'USB',
-                        icon: 'usb'
-                    }, {
-                        name: 'AirPlay',
-                        icon: 'airplay'
-                    }, {
-                        name: 'NET RADIO',
-                        icon: 'wifi'
-                    }]
-                },
-                {
-                    href: '/zone3',
-                    icon: 'build',
-                    text: 'Zone 3',
-                    on: false,
-                    volume: -46.5,
-                    input: 'HDMI3',
-                    isMuted: false,
-                    sleepTimer: 60
-                },
-                {
-                    href: '/zone4',
-                    icon: 'code',
-                    text: 'Zone 4',
-                    on: false,
-                    volume: 0.0,
-                    input: 'HDMI4',
-                    isMuted: false,
-                    sleepTimer: 120
                 }
-            ];
+            });
 
             this.settings = {
-                bass: 1,
-                treble: 3,
-                subwoofer: 2,
-                dialogue: 0,
-                dialogueLift: 1
+                network: {}
+            };
+            this.allInputs = [];
+            this.zones = [];
+            this.zoneNumber = [];
+
+            this.getZonesConfig = function () {
+                return _self.zones.reduce(function (promise, zone, index) {
+                    return promise.then(yamahaJS.getZoneConfig.bind(yamahaJS, zone, true)).then(function (config) {
+                        _self.zones[index] = {
+                            id: _self.zones[index]
+                        };
+                        angular.extend(_self.zones[index], config);
+                    })
+                }, Promise.resolve());
             };
 
-            this.openMenu = function ($mdOpenMenu, ev) {
-                $mdOpenMenu(ev);
+            this.getZonesBasicInfo = function () {
+                return _self.zones.reduce(function (promise, zone, index) {
+                    return promise
+                        .then(function () {
+                            yamahaJS.activeZone = index+1;
+                        })
+                        .then(yamahaJS.getBasicInfo.bind(yamahaJS,true))
+                        .then(function (basicInfo) {
+                            angular.extend(zone,basicInfo);
+                    })
+                }, Promise.resolve());
             };
+
+            this.getNetworkConfig = function () {
+                return yamahaJS.network.getInfo()
+                    .then(function (arr) {
+                        _self.settings.network.name = arr[0];
+                        _self.settings.network.standby = arr[1];
+                        _self.settings.network.macFilter = arr[2];
+                    });
+            };
+
+            //startup sequence
+            //Step 1. Get system config
+            yamahaJS.getSystemConfig(true)
+            //Step 2. Apply the config to settings
+                .then(function (config) {
+                    _self.allInputs = config.availableInputs;
+                    _self.zones = config.availableZones;
+                    _self.zoneNumber = _self.zones.length;
+
+                    _self.settings.modelName = config.modelName;
+                    _self.settings.systemId = config.systemId;
+                    _self.settings.version = config.version;
+                })
+
+                //Step 3. Get config for each zone
+                .then(this.getZonesConfig)
+
+                //Step 4. Get network settings (Network Name, Standby, MAC Filter
+                .then(this.getNetworkConfig)
+                .then(this.getZonesBasicInfo)
+                //Step 5. Notify everyone about the changes
+                .then(function () {
+                    pubSub.notify('backend:change');
+                })
         });
 })();

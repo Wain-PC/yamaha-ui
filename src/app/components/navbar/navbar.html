@@ -1,8 +1,11 @@
 <md-toolbar id="toolbar">
   <span class="md-toolbar-tools">
+    <md-button class="md-fab md-mini" aria-label="Home" title="Home" href="/home">
+        <ng-md-icon icon="home"></ng-md-icon>
+    </md-button>
     <md-button class="md-raised md-primary" ng-class="{'md-fab md-mini':!vm.options.desktopMode}">
-        <ng-md-icon icon="settings_power"></ng-md-icon>
-        {{vm.options.desktopMode?'All on':''}}
+      <ng-md-icon icon="settings_power"></ng-md-icon>
+      {{vm.options.desktopMode?'All on':''}}
     </md-button>
     <md-button class="md-raised md-warn" ng-class="{'md-fab md-mini':!vm.options.desktopMode}">
         <ng-md-icon icon="settings_power"></ng-md-icon>
@@ -11,7 +14,9 @@
     <md-button class="md-fab md-mini" aria-label="Party mode" title="Party mode">
         <ng-md-icon icon="party_mode"></ng-md-icon>
     </md-button>
-    <md-button ng-repeat="zone in zones" href="{{zone.url}}" ng-class="{'md-fab md-mini':!vm.options.desktopMode}">{{vm.options.desktopMode?zone.name:vm.lastChar(zone.name)}}</md-button>
+    <md-button ng-repeat="zone in zones" href="{{zone.url}}" ng-class="{'md-fab md-mini':!vm.options.desktopMode}">
+        {{vm.options.desktopMode?zone.name:vm.lastChar(zone.name)}}
+    </md-button>
     <md-button href="/remote" class="md-raised md-primary" ng-class="{'md-fab md-mini':!vm.options.desktopMode}">
         <ng-md-icon icon="settings_remote"></ng-md-icon>
         {{vm.options.desktopMode?'Remote':''}}

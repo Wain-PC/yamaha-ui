@@ -2,7 +2,7 @@
 <ul class="buckets layout-wrap layout-align-center-center layout-row" layout="" layout-align="center center"
     layout-wrap="">
     <li flex ng-repeat="(index, link) in main.zones"
-        class="ng-scope flex-xs-100 flex-sm-100 flex-md-50 flex-25">
+        class="ng-scope flex-xs-100 flex-sm-100 flex-md-50 flex-lg-50 flex-25">
         <span class="bucket-content md-button md-raised"
               aria-label="{{link.text}}">
             <!--<ng-md-icon icon="{{link.icon}}"></ng-md-icon>-->
@@ -10,15 +10,14 @@
                 <a ng-href="{{link.href}}"><span class="ng-binding ng-scope">{{link.text}}</span></a>
             </div>
             <div class="row">
-                <md-button ng-if="link.on" class="md-raised md-primary">On</md-button>
-                <md-button ng-if="!link.on" class="md-raised md-warn">Off</md-button>
-                <input-control input="link.input" inputslist="link.inputs"></input-control>
-                <volume-control volume="link.volume" ismuted="link.isMuted"></volume-control>
+                <md-button class="md-raised" ng-class="{'md-primary': link.isOn, 'md-warn':!link.isOn}">{{link.isOn? 'On' : 'Off'}}</md-button>
+                <input-control input="link.currentInput" inputslist="main.allInputs"></input-control>
+                <volume-control volume="link.currentVolume" ismuted="link.isMuted"></volume-control>
             </div>
             <div>
                 <div class="col-xs-12">
                     <md-slider flex class="md-primary" min="-80" max="16.5" step="0.5"
-                               ng-model="link.volume"></md-slider>
+                               ng-model="link.currentVolume"></md-slider>
                 </div>
             </div>
 
