@@ -17,7 +17,6 @@ angular.module('yamahaUi')
             },
             controller: function ($scope) {
                 var vm = this;
-                vm.clicks = 0;
                 vm.options = $scope.options;
                 vm.value = $scope.value;
                 vm.openMenu = function ($mdOpenMenu, ev) {
@@ -26,10 +25,6 @@ angular.module('yamahaUi')
 
                 vm.changeValue = function (step,multiplier) {
                     var diff = multiplier*step;
-                    vm.clicks++;
-                    if(vm.clicks === 3) {
-                        debugger;
-                    }
                     if((vm.value+diff) >= vm.options.min && (vm.value+diff) <= vm.options.max) {
                         vm.value += diff;
                     }
