@@ -6,14 +6,13 @@
             <div class="row">Common</div>
             <div class="row">
                 <!--On-off-->
-                <button-toggle param="zone.on" iconenabled="radio_button_off"
-                               icondisabled="settings_power"></button-toggle>
+                <button-on-off param="zone1.zone.isOn"></button-on-off>
 
                 <!--Inputs-->
-                <input-control input="zone.input" inputslist="zone.inputs"></input-control>
+                <input-control input="zone1.zone.currentInput" inputslist="zone1.zone.inputs"></input-control>
 
                 <!--Sleep timers-->
-                <input-control input="zone.sleepTimer" inputslist="sleepTimers"></input-control>
+                <input-control input="zone1.zone.sleep" inputslist="zone1.zone.sleepTimers"></input-control>
             </div>
         </span>
     </li>
@@ -22,33 +21,26 @@
             <div class="row">Sound</div>
             <div class="row">
                 <!--Volume-->
-                <volume-control volume="zone.volume" ismuted="zone.isMuted"></volume-control>
+                <volume-control volume="zone1.zone.currentVolume" ismuted="zone1.zone.isMuted"></volume-control>
 
                 <!--Mute-->
-                <button-toggle param="zone.isMuted" iconenabled="volume_mute" icondisabled="volume_off"></button-toggle>
+                <button-toggle name="Mute" param="zone1.zone.isMuted" iconenabled="volume_mute" icondisabled="volume_off"></button-toggle>
 
                 <!--Sound program-->
-                <input-control input="zone.soundProgram" inputslist="zone.soundPrograms"></input-control>
+                <input-control input="zone1.zone.currentSoundProgram" inputslist="zone1.zone.soundPrograms"></input-control>
 
                 <!--Enhancer-->
-                <button-toggle param="zone.enhancer" iconenabled="equalizer" icondisabled="equalizer"></button-toggle>
+                <button-toggle name="Enhancer" param="zone1.zone.enhancer" iconenabled="equalizer" icondisabled="equalizer"></button-toggle>
                 <!--Pure Direct-->
-                <button-toggle param="zone.pureDirect" iconenabled="high_quality"
+                <button-toggle name="Pure Direct" param="zone1.zone.pureDirect" iconenabled="high_quality"
                                icondisabled="high_quality"></button-toggle>
             </div>
             <div>
                 <div class="col-xs-12">
                     <md-slider flex class="md-primary" min="-80" max="16.5" step="0.5"
-                               ng-model="zone.volume"></md-slider>
+                               ng-model="zone1.zone.currentVolume"></md-slider>
                 </div>
             </div>
-        </span>
-    </li>
-    <tuner flex class="flex-100" frequency="zone.tuner.frequency" type="zone.tuner.type"></tuner>
-
-    <li flex class="flex-100">
-        <span class="bucket-content md-button md-raised">
-            <eight-list></eight-list>
         </span>
     </li>
 
@@ -56,11 +48,18 @@
         <span class="bucket-content md-button md-raised">
             <div class="row">Scenes</div>
             <div class="row">
-                <md-button class="md-raised" ng-repeat="scene in zone.scenes">
-                    <ng-md-icon icon="{{scene.icon}}"></ng-md-icon>
-                    {{scene.name}}
+                <md-button class="md-raised" ng-repeat="(index, scene) in zone1.zone.scenes" ng-click="zone1.setScene(index)">
+                    {{scene}}
                 </md-button>
             </div>
         </span>
     </li>
+
+    <!--<tuner flex class="flex-100" frequency="zone1.zone.tuner.frequency" type="zone.tuner.type"></tuner>
+
+    <li flex class="flex-100">
+        <span class="bucket-content md-button md-raised">
+            <eight-list></eight-list>
+        </span>
+    </li>-->
 </ul>

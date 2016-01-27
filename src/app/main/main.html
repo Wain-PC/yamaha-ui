@@ -1,23 +1,23 @@
 <h2 class="md-headline" style="margin-top: 0;">Fast access panel</h2>
 <ul class="buckets layout-wrap layout-align-center-center layout-row" layout="" layout-align="center center"
     layout-wrap="">
-    <li flex ng-repeat="(index, link) in main.zones"
+    <li flex ng-repeat="zone in main.zones"
         class="ng-scope flex-xs-100 flex-sm-100 flex-md-50 flex-lg-50 flex-25">
         <span class="bucket-content md-button md-raised"
-              aria-label="{{link.text}}">
-            <!--<ng-md-icon icon="{{link.icon}}"></ng-md-icon>-->
+              aria-label="{{zone.text}}">
+            <!--<ng-md-icon icon="{{zone.icon}}"></ng-md-icon>-->
             <div class="row">
-                <a ng-href="{{link.href}}"><span class="ng-binding ng-scope">{{link.text}}</span></a>
+                <a ng-href="{{zone.href}}"><span class="ng-binding ng-scope">{{zone.text}}</span></a>
             </div>
             <div class="row">
-                <button-on-off param="link.isOn"></button-on-off>
-                <input-control input="link.currentInput" inputslist="main.allInputs"></input-control>
-                <volume-control volume="link.currentVolume" ismuted="link.isMuted"></volume-control>
+                <button-on-off param="zone.isOn"></button-on-off>
+                <input-control input="zone.currentInput" inputslist="zone.inputs"></input-control>
+                <volume-control volume="zone.currentVolume" ismuted="zone.isMuted"></volume-control>
             </div>
             <div>
                 <div class="col-xs-12">
                     <md-slider flex class="md-primary" min="-80" max="16.5" step="0.5"
-                               ng-model="link.currentVolume"></md-slider>
+                               ng-model="zone.currentVolume"></md-slider>
                 </div>
             </div>
 

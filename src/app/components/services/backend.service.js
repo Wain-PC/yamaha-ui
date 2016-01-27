@@ -2,7 +2,7 @@
     'use strict';
     angular
         .module('yamahaUi')
-        .service('yamahaBackend', function (yamahaJS, pubSub) {
+        .service('yamahaBackend', function (yamahaJS, pubSub, throttler) {
             var _self = this;
 
             pubSub.addEvent({
@@ -24,9 +24,26 @@
             this.zoneNumber = [];
 
             this.propertyToMethodZoneTable = {
-                currentVolume: 'setVolume',
-                isMuted: 'setMute',
-                isOn: 'switchPower'
+                currentVolume: {
+                    method: 'setVolume'
+                },
+                isMuted: {
+                    method: 'setMute'
+                },
+                isOn: {
+                    method: 'switchPower'
+                },
+                currentInput: {
+                    method: 'setInputTo'
+                },
+                enhancer: {
+                    method: 'setEnhancer',
+                    noZone: true
+                },
+                pureDirect: {
+                    method: 'setPureDirect',
+                    noZone: true
+                }
             };
 
             this.getZonesConfig = function () {
@@ -39,9 +56,16 @@
                         pubSub.subscribe('frontend:change:' + _self.zones[index].id, null, function (event, oldZone) {
                             var zoneId = event.name.split(':').pop(),
                                 zone = _self.getZoneById(zoneId),
-                                propName = _self.getChangedProperty(zone, oldZone);
-                            if(propName) {
-                                _self.callYamahaMethod(zoneId, propName.property, propName.newValue);
+                                changedProps = _self.getChangedProperties(zone, oldZone);
+                            if (changedProps.length) {
+                                return changedProps.reduce(function (promise, changedProperty) {
+                                        return promise.then(function () {
+                                            return _self.callYamahaMethod(zoneId, changedProperty.property, changedProperty.newValue);
+                                        });
+                                    }, Promise.resolve())
+                                    .then(function () {
+                                        _self.debouncedGetMainZoneBasicInfo();
+                                    });
                             }
                         });
                     })
@@ -51,12 +75,25 @@
             this.getZonesBasicInfo = function () {
                 return _self.zones.reduce(function (promise, zone, index) {
                     return promise
-                        .then(yamahaJS.getBasicInfo.bind(yamahaJS, zone.id, true))
+                        .then(_self.getZoneBasicInfo.bind(_self, zone))
                         .then(function (basicInfo) {
                             angular.extend(zone, basicInfo);
+                            zone.inputs = _self.allInputs;
                         })
                 }, Promise.resolve());
             };
+
+            this.getZoneBasicInfo = function (zone) {
+                return yamahaJS.getBasicInfo(zone.id, true)
+                    .then(function (basicInfo) {
+                        angular.extend(zone, basicInfo);
+                        zone.inputs = _self.allInputs;
+                    });
+            };
+
+            this.debouncedGetMainZoneBasicInfo = throttler.debounce(function () {
+                return _self.getZoneBasicInfo(_self.zones[0]);
+            }, 500, this);
 
             this.getNetworkConfig = function () {
                 return yamahaJS.network.getInfo()
@@ -77,32 +114,47 @@
                 return null;
             };
 
-            this.getChangedProperty = function (newObject, oldObject) {
-                var propName;
+            this.getChangedProperties = function (newObject, oldObject) {
+                var propName, changedPropsArray = [];
                 for (propName in oldObject) {
                     if (oldObject.hasOwnProperty(propName) && newObject.hasOwnProperty(propName)) {
                         if (oldObject[propName] !== newObject[propName]) {
-                            return {
+                            changedPropsArray.push({
                                 property: propName,
                                 oldValue: oldObject[propName],
                                 newValue: newObject[propName]
-                            }
+                            });
                         }
                     }
                 }
-                return null;
+                return changedPropsArray;
             };
 
             this.callYamahaMethod = function (zoneId, propName, propValue) {
                 var methodName = this.propertyToMethodZoneTable[propName];
-                if(methodName) {
+                if (methodName && methodName.method) {
                     //TODO:after the actual method has been called, we must verify that the actual value has been updated
                     //this should probably be debounced
-                    yamahaJS[methodName](zoneId, propValue);
+                    if (methodName.noZone) {
+                        return yamahaJS[methodName.method](propValue);
+                    }
+                    return yamahaJS[methodName.method](zoneId, propValue);
                 }
                 else {
                     console.error("No method found for changed property %s", propName);
+                    return Promise.reject(null)
                 }
+            };
+
+
+            this.setMainZoneScene = function (num) {
+                return yamahaJS.setScene(num)
+                    .then(function () {
+                        return _self.debouncedGetMainZoneBasicInfo();
+                    })
+                    .then(function () {
+                        pubSub.notify('backend:change');
+                    })
             };
 
 
