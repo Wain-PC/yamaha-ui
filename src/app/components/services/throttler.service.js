@@ -25,9 +25,9 @@ angular
             return function debounced() {
                 var args = Array.prototype.slice.call(arguments);
                 $timeout.cancel(timer);
-                timer = $timeout(function () {
+                return timer = $timeout(function () {
                     timer = undefined;
-                    func.apply(context, args);
+                    return func.apply(context, args);
                 }, wait || 100);
             };
         }
@@ -53,13 +53,13 @@ angular
                 if (last && now < last + wait) {
                     // hold on to it
                     $timeout.cancel(deferTimer);
-                    deferTimer = $timeout(function () {
+                   return deferTimer = $timeout(function () {
                         last = now;
-                        func.apply(context, args);
+                       return func.apply(context, args);
                     }, wait);
                 } else {
                     last = now;
-                    func.apply(context, args);
+                   return func.apply(context, args);
                 }
             };
         }
