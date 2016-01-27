@@ -42,19 +42,24 @@ angular
          * @returns {Function} Обернутая функция
          */
         function throttle(func, wait, context) {
-            var timer = null;
-            if (!wait) {
-                wait = 1000;
-            }
+            wait = wait || 500;
+            var last,
+                deferTimer;
             return function () {
-                var args = Array.prototype.slice.call(arguments);
-                if (!timer) {
-                    func.apply(context, args);
-                    timer = $timeout(function () {
-                        timer = null;
-                        //a kind of fallback to execute missing calls when the timer has finished
+                var context = context || this;
+
+                var now = +new Date,
+                    args = arguments;
+                if (last && now < last + wait) {
+                    // hold on to it
+                    $timeout.cancel(deferTimer);
+                    deferTimer = $timeout(function () {
+                        last = now;
                         func.apply(context, args);
                     }, wait);
+                } else {
+                    last = now;
+                    func.apply(context, args);
                 }
             };
         }

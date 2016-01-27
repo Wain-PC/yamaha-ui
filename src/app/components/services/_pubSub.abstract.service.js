@@ -22,12 +22,12 @@
              * @private
              */
             var notify = throttler.throttle(
-                function (eventName) {
+                function (eventName, overriddenGetter) {
                     if (!subscribers.length) {
-                        //console.error(`Trying to emit event '${eventName}' while it has no subscribers`);
+                        console.error('Trying to emit event '+eventName+' while it has no subscribers');
                         return false;
                     }
-                    if (!events[eventName]) {
+                    if (!events[eventName] && !overriddenGetter) {
                         if (this.events) {
                             console.error('Trying to emit event' + eventName + 'while it has no getter set');
                         }
@@ -35,7 +35,7 @@
                     }
                     subscribers.some(function (subscriber) {
                         if (subscriber.eventName === eventName) {
-                            $rootScope.$emit(eventName, events[subscriber.eventName]());
+                            $rootScope.$emit(eventName, overriddenGetter || events[subscriber.eventName]());
                             return true;
                         }
                         return false;

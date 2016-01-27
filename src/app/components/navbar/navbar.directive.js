@@ -59,7 +59,7 @@
               $scope.zones = $scope.zones.slice(0,length);
           }
           //also, apply custom names
-          $scope.zones.forEach(function (zone, index) {
+          data.zones.forEach(function (zone, index) {
               zone.name = data.zones[index].name;
           });
       }, true);

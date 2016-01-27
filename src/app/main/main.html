@@ -10,7 +10,7 @@
                 <a ng-href="{{link.href}}"><span class="ng-binding ng-scope">{{link.text}}</span></a>
             </div>
             <div class="row">
-                <md-button class="md-raised" ng-class="{'md-primary': link.isOn, 'md-warn':!link.isOn}">{{link.isOn? 'On' : 'Off'}}</md-button>
+                <button-on-off param="link.isOn"></button-on-off>
                 <input-control input="link.currentInput" inputslist="main.allInputs"></input-control>
                 <volume-control volume="link.currentVolume" ismuted="link.isMuted"></volume-control>
             </div>
