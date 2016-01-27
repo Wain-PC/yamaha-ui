@@ -1,3 +1,5 @@
-<md-button ng-click="buttonToggle.toggle()" class="md-fab md-mini" ng-class="param === true ? 'md-warn' : 'md-primary'">
+<md-button ng-click="buttonToggle.toggle()" class="md-fab md-mini"
+           ng-class="param === true ? 'md-warn' : 'md-primary'"
+title="{{::name}}: {{param === true && 'On' || 'Off'}}">
     <ng-md-icon ng-attr-icon="{{param === true && icondisabled || iconenabled}}"></ng-md-icon>
 </md-button>

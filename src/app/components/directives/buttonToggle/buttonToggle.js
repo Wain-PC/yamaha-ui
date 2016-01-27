@@ -11,9 +11,9 @@ angular.module('yamahaUi')
     .directive('buttonToggle', function () {
         return {
             restrict: 'E',
-            transclude: true,
             scope: {
                 param: '=',
+                name: '@',
                 iconenabled: '@',
                 icondisabled: '@'
             },
