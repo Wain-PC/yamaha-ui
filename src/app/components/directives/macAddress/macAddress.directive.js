@@ -16,6 +16,9 @@ angular.module('yamahaUi')
                 var formatter = function(inputValue) {
                     //Add a colon after each 2 input characters, do NOT let using any non-number
                     //total input must be 6*2 = 12 numbers exactly
+                    if(!inputValue) {
+                        inputValue = '000000000000';
+                    }
                     var transformedInput = inputValue.toUpperCase().replace(/[^A-F0-9]/g, '').substr(0,12),
                         i, length, array = [],
                         n = 2;
