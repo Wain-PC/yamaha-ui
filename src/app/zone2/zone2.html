@@ -1,0 +1,42 @@
+<h2 class="md-headline" style="margin-top: 0;">{{zone2.zone.name || 'Zone 2'}}</h2>
+<ul class="buckets layout-wrap layout-align-center-center layout-row" layout="" layout-align="center center"
+    layout-wrap="">
+    <li flex class="flex-100">
+        <span class="bucket-content md-button md-raised">
+            <div class="row">Common</div>
+            <div class="row">
+                <!--On-off-->
+                <button-on-off param="zone2.zone.isOn"></button-on-off>
+
+                <!--Inputs-->
+                <input-control input="zone2.zone.currentInput" inputslist="zone2.zone.inputs"></input-control>
+            </div>
+        </span>
+    </li>
+    <li flex class="flex-100">
+        <span class="bucket-content md-button md-raised">
+            <div class="row">Sound</div>
+            <div class="row">
+                <!--Volume-->
+                <volume-control volume="zone2.zone.currentVolume" ismuted="zone2.zone.isMuted"></volume-control>
+
+                <!--Mute-->
+                <button-toggle name="Mute" param="zone2.zone.isMuted" iconenabled="volume_mute" icondisabled="volume_off"></button-toggle>
+            </div>
+            <div>
+                <div class="col-xs-12">
+                    <md-slider flex class="md-primary" min="-80" max="16.5" step="0.5"
+                               ng-model="zone2.zone.currentVolume"></md-slider>
+                </div>
+            </div>
+        </span>
+    </li>
+
+    <!--<tuner flex class="flex-100" frequency="zone2.zone.tuner.frequency" type="zone.tuner.type"></tuner>
+
+    <li flex class="flex-100">
+        <span class="bucket-content md-button md-raised">
+            <eight-list></eight-list>
+        </span>
+    </li>-->
+</ul>
