@@ -25,9 +25,9 @@
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
     your browser</a> to improve your experience.</p>
 <![endif]-->
-<yamaha-sidebar></yamaha-sidebar>
-<yamaha-navbar class="navbar_fixed"></yamaha-navbar>
-<div ui-view class="container-fluid container-main"></div>
+<yamaha-navbar class="navbar_fixed" ng-show="!pageLoading"></yamaha-navbar>
+<page-loader ng-show="pageLoading"></page-loader>
+<div ui-view class="container-fluid container-main" ng-show="!pageLoading"></div>
 
 <!-- build:js(src) scripts/vendor.js -->
 <!-- bower:js -->
