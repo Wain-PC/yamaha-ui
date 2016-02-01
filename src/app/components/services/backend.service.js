@@ -62,10 +62,10 @@
                                         return promise.then(function () {
                                             return _self.callYamahaMethod(zoneId, changedProperty.property, changedProperty.newValue);
                                         });
-                                    }, Promise.resolve())
-                                    .then(function () {
+                                    }, Promise.resolve());
+                                    /*.then(function () {
                                         _self.debouncedGetMainZoneBasicInfo();
-                                    });
+                                    });*/
                             }
                         });
                     })
@@ -157,31 +157,36 @@
                     })
             };
 
+            this.startup = function () {
+                //startup sequence
+                //Step 1.1 Get service info
+                yamahaJS.getSystemServiceInfo()
+                    //Step 1.2 Get system config
+                    .then(yamahaJS.getSystemConfig.bind(yamahaJS, true))
+                    //Step 2. Apply the config to settings
+                    .then(function (config) {
+                        _self.allInputs = config.availableInputs;
+                        _self.zones = config.availableZones;
+                        _self.zoneNumber = _self.zones.length;
 
-            //startup sequence
-            //Step 1.1 Get service info
-            yamahaJS.getSystemServiceInfo()
-                //Step 1.2 Get system config
-                .then(yamahaJS.getSystemConfig.bind(yamahaJS, true))
-                //Step 2. Apply the config to settings
-                .then(function (config) {
-                    _self.allInputs = config.availableInputs;
-                    _self.zones = config.availableZones;
-                    _self.zoneNumber = _self.zones.length;
+                        _self.settings.modelName = config.modelName;
+                        _self.settings.systemId = config.systemId;
+                        _self.settings.version = config.version;
+                    })
 
-                    _self.settings.modelName = config.modelName;
-                    _self.settings.systemId = config.systemId;
-                    _self.settings.version = config.version;
-                })
+                    //Step 3. Get config for each zone
+                    .then(this.getZonesConfig)
+                    //Step 4. Get network settings (Network Name, Standby, MAC Filter
+                    .then(this.getNetworkConfig)
+                    .then(this.getZonesBasicInfo)
+                    //Step 5. Notify everyone about the changes
+                    .then(function () {
+                        pubSub.notify('backend:change');
+                    });
+            };
 
-                //Step 3. Get config for each zone
-                .then(this.getZonesConfig)
-                //Step 4. Get network settings (Network Name, Standby, MAC Filter
-                .then(this.getNetworkConfig)
-                .then(this.getZonesBasicInfo)
-                //Step 5. Notify everyone about the changes
-                .then(function () {
-                    pubSub.notify('backend:change');
-                });
+
+            //Startup goes here
+            this.startup();
         });
 })();
