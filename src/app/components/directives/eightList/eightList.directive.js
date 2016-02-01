@@ -8,27 +8,24 @@
  * @restrict E
  * */
 angular.module('yamahaUi')
-    .directive('eightList', function ($mdDialog) {
+    .directive('eightList', function ($mdDialog, yamahaJS) {
         return {
             restrict: 'E',
             scope: {
-                options: '='
+                inputname: '='
             },
             controller: function ($scope) {
                 var vm = this;
-                $scope.items = {};
-                $scope.items.list = [
-                    {name: 'One', value: '1'},
-                    {name: 'Two', value: '2'},
-                    {name: 'Three', value: '3'},
-                    {name: 'Four', value: '4'},
-                    {name: 'Five', value: '5'},
-                    {name: 'Six', value: '6'},
-                    {name: 'Seven', value: '7'},
-                    {name: 'Eight', value: '8'}
-                ];
 
-                $scope.items.listHeader = 'Yoba List';
+                $scope.$watch('inputname', function (newValue) {
+                    console.log(newValue);
+                    if(newValue) {
+                        yamahaJS.list.get(newValue).then(function (list) {
+                            console.log("List:",list);
+                            $scope.list = list;
+                        })
+                    }
+                });
 
                 vm.listItemClick = function (value, $event) {
                     $mdDialog.show(

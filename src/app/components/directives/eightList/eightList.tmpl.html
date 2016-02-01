@@ -1,6 +1,6 @@
 <md-list>
-    <md-subheader class="md-no-sticky">{{items.listHeader}}</md-subheader>
-    <md-list-item ng-repeat="item in items.list" ng-click="eightList.listItemClick(item.value, $event)">
+    <md-subheader class="md-no-sticky">{{list.header}}</md-subheader>
+    <md-list-item ng-repeat="(key, item) in list.list" ng-click="eightList.listItemClick(key+1, $event)">
         <p>{{item.name}}</p>
     </md-list-item>
 </md-list>
