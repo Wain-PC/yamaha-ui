@@ -1,9 +1,12 @@
 <md-list>
     <md-subheader class="md-no-sticky">
         <md-button ng-click="eightList.goBack()">Back</md-button>
-        {{list.header}}
+        <md-button ng-click="eightList.prevPage()">Prev Page</md-button>
+        {{eightList.header}} ({{eightList.cursorPosition}} / {{eightList.max}})
+        <md-button ng-click="eightList.nextPage(true)">Next Page</md-button>
+        <md-button ng-click="eightList.getFullList()">Full list</md-button>
     </md-subheader>
-    <md-list-item ng-repeat="(key, item) in list.list" ng-click="eightList.listItemClick(key+1, $event)">
+    <md-list-item ng-repeat="(key, item) in eightList.list" ng-click="eightList.listItemClick(key+1, item.type, $event)">
         <p>{{item.name}}</p>
     </md-list-item>
 </md-list>
