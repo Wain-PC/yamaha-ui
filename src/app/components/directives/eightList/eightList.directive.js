@@ -20,24 +20,27 @@ angular.module('yamahaUi')
                 $scope.$watch('inputname', function (newValue) {
                     console.log(newValue);
                     if(newValue) {
-                        yamahaJS.list.get(newValue).then(function (list) {
-                            console.log("List:",list);
-                            $scope.list = list;
-                        })
+                        vm.updateList();
                     }
                 });
 
+                vm.updateList = function () {
+                    return yamahaJS.list.get($scope.inputname).then(function (list) {
+                        console.log("List:",list);
+                        $scope.list = list;
+                        $scope.$apply();
+                    });
+                };
+
                 vm.listItemClick = function (value, $event) {
-                    $mdDialog.show(
-                        $mdDialog.alert()
-                            .parent(angular.element(document.body))
-                            .clickOutsideToClose(true)
-                            .title('This is an alert title')
-                            .textContent('You clicked on ' + value)
-                            .ariaLabel('Alert Dialog Demo')
-                            .ok('Fine!')
-                            .targetEvent($event)
-                    );
+                    return yamahaJS.list.selectItem($scope.inputname, value)
+                        //then update the list
+                        .then(vm.updateList.bind(vm));
+                };
+                vm.goBack = function () {
+                    return yamahaJS.list.back($scope.inputname)
+                        //then update the list
+                        .then(vm.updateList.bind(vm));
                 };
 
             },

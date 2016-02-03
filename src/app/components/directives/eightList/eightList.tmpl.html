@@ -1,5 +1,8 @@
 <md-list>
-    <md-subheader class="md-no-sticky">{{list.header}}</md-subheader>
+    <md-subheader class="md-no-sticky">
+        <md-button ng-click="eightList.goBack()">Back</md-button>
+        {{list.header}}
+    </md-subheader>
     <md-list-item ng-repeat="(key, item) in list.list" ng-click="eightList.listItemClick(key+1, $event)">
         <p>{{item.name}}</p>
     </md-list-item>
