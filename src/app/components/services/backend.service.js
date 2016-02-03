@@ -10,8 +10,7 @@
                 getter: function () {
                     return {
                         settings: _self.settings,
-                        zones: _self.zones,
-                        allInputs: _self.allInputs
+                        zones: _self.zones
                     }
                 }
             });
@@ -19,7 +18,6 @@
             this.settings = {
                 network: {}
             };
-            this.allInputs = [];
             this.zones = [];
             this.zoneNumber = [];
 
@@ -76,10 +74,6 @@
                 return _self.zones.reduce(function (promise, zone, index) {
                     return promise
                         .then(_self.getZoneBasicInfo.bind(_self, zone))
-                        .then(function (basicInfo) {
-                            angular.extend(zone, basicInfo);
-                            zone.inputs = _self.allInputs;
-                        })
                 }, Promise.resolve());
             };
 
@@ -87,7 +81,10 @@
                 return yamahaJS.getBasicInfo(zone.id, true)
                     .then(function (basicInfo) {
                         angular.extend(zone, basicInfo);
-                        zone.inputs = _self.allInputs;
+                    })
+                    .then(yamahaJS.getAvailableInputs.bind(yamahaJS, zone.id))
+                    .then(function (zoneInputs) {
+                        zone.inputs = zoneInputs;
                     });
             };
 
@@ -165,10 +162,8 @@
                     .then(yamahaJS.getSystemConfig.bind(yamahaJS, true))
                     //Step 2. Apply the config to settings
                     .then(function (config) {
-                        _self.allInputs = config.availableInputs;
                         _self.zones = config.availableZones;
                         _self.zoneNumber = _self.zones.length;
-
                         _self.settings.modelName = config.modelName;
                         _self.settings.systemId = config.systemId;
                         _self.settings.version = config.version;
