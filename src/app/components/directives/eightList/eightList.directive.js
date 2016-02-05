@@ -33,20 +33,44 @@ angular.module('yamahaUi')
 
                 vm.updateList = function (purgeList) {
                     return yamahaJS.list.get($scope.inputname).then(function (list) {
+                        var i, length;
                         vm.max = list.numItems;
                         vm.level = list.level;
                         vm.header = list.header;
                         vm.cursorPosition = list.cursorPosition;
+                        //if the list must be cleared, fill the first items with the actual data,
+                        //and each of the remains with 'Loading...'
                         if (purgeList) {
-                            vm.list = [];
+                            vm.list = new Array(vm.max);
+                            length = vm.list.length;
+                            for(i=0;i<length;i++) {
+                                if(list.list[i]) {
+                                    console.log(i, list.list[i].name);
+                                    vm.list[i] = list.list[i];
+                                }
+                                else {
+                                    vm.list[i] = {
+                                        name: 'Loading...',
+                                        type: -1
+                                    }
+                                }
+                            }
                         }
-                        vm.list = vm.list.concat(list.list);
+                        //we're not purgint the list, just adding new items to it
+                        //this way, we should start filling the array from the cursorPosition - 1 (as it starts from 1)
+                        else {
+                            for(i=0;i<list.list.length;i++) {
+                                console.log(i, list.list[i].name);
+                                vm.list[vm.cursorPosition-1+i] = list.list[i];
+                            }
+                        }
                         $scope.$apply();
                     });
                 };
 
                 vm.listItemClick = function (value, type, $event) {
                     //jump to this line
+                    if(type === -1) return false;
                     return yamahaJS.list.jumpLine($scope.inputname, value)
                         .then(function () {
                             //determine the position of the cursor relative to the beginning of the page
@@ -76,34 +100,28 @@ angular.module('yamahaUi')
                 //and the total page pool size has been calculated
                 vm.nextPage = function (purgeList) {
                     return yamahaJS.list.nextPage($scope.inputname)
+                        //we should use a really small timeout here before requesting a new page
+                        //this will prevent us from hitting a bigger timeout in the library
+                        //while the list is busy switching the page
+                        //The value here is the lowest I can get without compromising stability
+                    //TODO: deal with the same pages being loaded twice (hence the gaps in the list)
+                        .then(function () {
+                            return $timeout(function () {
+                                
+                            },200)
+                        })
                         //then update the list
                         .then(function () {
-                            console.log("Got page:", Math.ceil(vm.cursorPosition / 8));
                             return vm.updateList(purgeList);
                         });
                 };
 
-                vm.prevPage = function () {
-                    //can't go back if already at the beginning of the list
-                    if (vm.cursorPosition <= 8) {
-                        return false;
-                    }
-                    return yamahaJS.list.prevPage($scope.inputname)
-                        //then update the list
-                        .then(function () {
-                            vm.updateList(true);
-                        });
-                };
 
                 vm.getFullList = function () {
                     var numPages = Math.ceil(vm.max / 8),
                         promise = Promise.resolve(), i;
                     for (i = 1; i < numPages; i++) {
-                        promise = promise.then(vm.nextPage).then(function () {
-                            //TODO: remove when the case with doubling pages has been investigated
-                            return $timeout(function () {
-                            }, 100)
-                        });
+                        promise = promise.then(vm.nextPage);
                     }
                     return promise;
                 }
